@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "bstr.h"
 #include "comp.h"
+#include <string.h>
 
 void COMP_Init(Computer *cmp) {
     int r, m;
@@ -29,6 +30,17 @@ void COMP_ExecuteNot(Computer *comp) {
     BSTR_Substring(&srBS,comp->ir,7,3);
     comp->reg[ BSTR_GetValue(drBS) ] = comp->reg[ BSTR_GetValue(srBS) ];
     BSTR_Invert( & comp->reg[ BSTR_GetValue(drBS)  ]  );
+    int val = BSTR_GetValue(comp->reg[ BSTR_GetValue(drBS) ] );
+    char bits[3];
+    if (val > 0) {
+	strcpy(bits, "001");
+    } else if (val < 0) {
+	strcpy(bits, "100");
+    } else {
+	strcpy(bits, "010");
+    }
+    BSTR_SetBits(&comp.cc, bits);
+
 }
 
 void COMP_ExecuteAdd(Computer *comp) {
