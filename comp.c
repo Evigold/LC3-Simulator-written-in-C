@@ -39,7 +39,7 @@ void COMP_ExecuteNot(Computer *comp) {
     } else {
 	strcpy(bits, "010");
     }
-    BSTR_SetBits(&comp.cc, bits);
+    BSTR_SetBits(&(comp->cc), bits);
 
 }
 
