@@ -67,24 +67,34 @@ void COMP_ExecuteAdd(Computer *comp) {
         BSTR_Substring(&drBS, comp->ir, 4, 3);
         BSTR_Substring(&sr1BS, comp->ir, 7, 3);
         BSTR_Substring(&sr2BS, comp->ir, 13, 3);
-        sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
-                 + BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
-        BSTR_SetValueTwosComp(&sumBS, sum, 16);
-        comp->reg[ BSTR_GetValue(drBS) ] = sumBS;
+    
+		// USE APPEND METHOD?
+	//BSTR_Append(&drBS, sr1BS, sr2BS);
+
+        //sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
+        //         + BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
+        //BSTR_SetValueTwosComp(&sumBS, sum, 16);
+        //comp->reg[ BSTR_GetValue(drBS) ] = sumBS;
     }
 
 
 }
 
 void COMP_ExecuteLD(Computer *comp) {
-
+    BitString drBS, pcO9;
+    BSTR_Substring(&drBS, comp->ir, 4, 3);
+    BSTR_Substring(&pcO9, comp->ir, 7, 9);
+    int value;
+    
 }
 
 void COMP_ExecuteBR(Computer *comp) {
     BitString nzp;
     BSTR_Substring(&nzp, comp->ir, 4, 3);
     if (BSTR_GetValue(nzp) == BSTR_GetValue(comp->cc)) {
-
+        BitString pcO9;
+	BSTR_Substring(&pcO9, comp->ir, 7, 9);
+	BSTR_Append(&(comp->pc), comp->pc, pcO9);
     }
 }
 
