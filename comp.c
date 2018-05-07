@@ -40,21 +40,20 @@ void COMP_ExecuteNot(Computer *comp) {
 	strcpy(bits, "010");
     }
     BSTR_SetBits(&(comp->cc), bits);
-
 }
 
 void COMP_ExecuteAdd(Computer *comp) {
     BitString immBS;
-    BSTR_Substring(&immBS, comp->ir, 5, 1);
+    BSTR_Substring(&immBS, comp->ir, 10, 1);
 
     if (BSTR_GetValue(immBS) == 1) {
         //Do an immediate add
         BitString drBS, srBS, immBS, sumBS;
         int sum;
 
-        BSTR_Substring(&drBS, comp->ir, 9, 3);
-        BSTR_Substring(&srBS, comp->ir, 6, 3);
-        BSTR_Substring(&immBS, comp->ir, 0, 5);
+        BSTR_Substring(&drBS, comp->ir, 4, 3);
+        BSTR_Substring(&srBS, comp->ir, 7, 3);
+        BSTR_Substring(&immBS, comp->ir, 11, 5);
 
         sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(srBS) ])
                 + BSTR_GetValue(immBS);
@@ -65,9 +64,9 @@ void COMP_ExecuteAdd(Computer *comp) {
         BitString drBS, sr1BS, sr2BS, sumBS;
         int sum;
 
-        BSTR_Substring(&drBS, comp->ir, 9, 3);
-        BSTR_Substring(&sr1BS, comp->ir, 6, 3);
-        BSTR_Substring(&sr2BS, comp->ir, 0, 3);
+        BSTR_Substring(&drBS, comp->ir, 4, 3);
+        BSTR_Substring(&sr1BS, comp->ir, 7, 3);
+        BSTR_Substring(&sr2BS, comp->ir, 13, 3);
         sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
                  + BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
         BSTR_SetValueTwosComp(&sumBS, sum, 16);
@@ -82,7 +81,11 @@ void COMP_ExecuteLD(Computer *comp) {
 }
 
 void COMP_ExecuteBR(Computer *comp) {
+    BitString nzp;
+    BSTR_Substring(&nzp, comp->ir, 4, 3);
+    if (BSTR_GetValue(nzp) == BSTR_GetValue(comp->cc)) {
 
+    }
 }
 
 void COMP_ExecuteOut(Computer *comp) {
