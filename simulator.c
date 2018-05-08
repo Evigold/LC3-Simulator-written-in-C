@@ -69,7 +69,7 @@ int main(int argc, const char * argv[]) {
 /**    Your grade will depend largely on how well that works. */
 /************************************** */
 
-    char* program[] =
+/*    char* program[] =
     {
      "0010000000000111",
      "0010001000000111",
@@ -84,7 +84,7 @@ int main(int argc, const char * argv[]) {
 	 };
 
     int programSize = 10;
-
+*/
 //	BitString notInstr;
 
     /*  You may find it useful to play around with the */
@@ -124,30 +124,33 @@ int main(int argc, const char * argv[]) {
 
 	// Test for TRAP HALT
 	//	TRAP : x25
-
-/*	char* program[] = {"1111000000100101"};
+/*
+	char* program[] = {"1111000000100101"};
 	int programSize = 1;
 */
-	// Result:
+	// Result : All registered should be loaded with theri equivalent value (R0:0, R5:5)
+	//	CC : 000
+// PASSED
 
 	// Test for ADD
-	//	ADD : R3 R3 #24	(Add #24 adn the value stored in R4 and store in R3)
+	//	ADD : R3 R3 #12	(Add #12 and the value stored in R4 and store in R3)
 	//	TRAP : x25	(HALT)
 /*	char * program[] =
 		{
-		"0001011011111000",
+		"0001011011101100",
 		"1111000000100101"
 		};
 	int programSize = 2;
 */
-	//Results: R3 should store #27 or ""0000 0000 0001 1011"
-	//	CC: 001
 
+	//Results: R3 should store #15 or ""0000 0000 0000 1111"
+	//	CC: 001
+// PASSED
 
 	// Test for ADD
 	//	ADD : R2 R4 R1	(Add values of R4 and R1 and store in R2)
 	//	TRAP : x25	(HALT)
-/* 	char * program[] =
+/*	char * program[] =
 		{
 		"0001010100000001",
 		"1111000000100101"
@@ -156,18 +159,18 @@ int main(int argc, const char * argv[]) {
 */
 	// Results: R2 should store #5 or ""0000 0000 0000 0101"
 	//	CC: 001
-
+// PASSED
 
 	// Test for ADD with negative outcome
 	//	ADD : R0 R5 #-9	(Add #-9 and the value stored in R5 and store in R0)
 	//	TRAP : x25	(HALT)
-/*	char * program[] =
+	char * program[] =
 		{
 		"000100010110111",
 		"1111000000100101"
 		};
 	int programSize = 2;
-*/
+
 	// Results: R0 should store #-4 or "1111 1111 1111 1100"
 	//	CC: 100
 
