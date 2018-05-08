@@ -1,3 +1,10 @@
+/*
+ * Scott Robertson, Evi Goldschmidt
+ * TCSS 371C Assignment 4
+ * Scott: Jetbrains CLion IDE
+ * Evi:   Nano editor and gdb
+ */
+
 #include <stdio.h>
 #include "bstr.h"
 #include "comp.h"
@@ -92,7 +99,6 @@ void COMP_ExecuteLD(Computer *comp) {
                    BSTR_GetValue(ldValBit), 16);
 
     //Set condition code
-    //TODO depends on value stored in register right (could be 0 or positive)?
     COMP_SetConditionCode(&comp->cc, ldVal);
 }
 
@@ -134,31 +140,131 @@ void COMP_ExecuteOut(Computer *comp) {
     printf("%c", n);
 }
 
+void COMP_ExecuteAnd(Computer *comp) {
+    BitString immBS;
+    int and;
+
+    //Check for immediate AND
+    BSTR_Substring(&immBS, comp->ir, 10, 1);
+
+    if (BSTR_GetValue(immBS) == 1) {
+        //Immediate AND
+        BitString drBS, srBS, imm5BS, andBS;
+
+        //Get register substrings
+        BSTR_Substring(&drBS, comp->ir, 4, 3);
+        BSTR_Substring(&srBS, comp->ir, 7, 3);
+        BSTR_Substring(&imm5BS, comp->ir, 11, 5);
+
+        //Calculate AND and set AND
+        and = BSTR_GetValueTwosComp(comp->reg[ BSTR_GetValue(srBS) ])
+              & BSTR_GetValueTwosComp(imm5BS);
+        BSTR_SetValueTwosComp(&andBS, and, 16);
+        comp->reg[BSTR_GetValue(drBS)] = andBS;
+
+    } else {
+        //Register AND
+        BitString drBS, sr1BS, sr2BS, andBS;
+
+        BSTR_Substring(&drBS, comp->ir, 4, 3);
+        BSTR_Substring(&sr1BS, comp->ir, 7, 3);
+        BSTR_Substring(&sr2BS, comp->ir, 13, 3);
+
+        and = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
+              & BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
+        BSTR_SetValueTwosComp(&andBS, and, 16);
+        comp->reg[ BSTR_GetValue(drBS) ] = andBS;
+    }
+
+    //Update condition code
+    COMP_SetConditionCode(&comp->cc, and);
+}
+
+void COMP_ExecuteLDI(Computer *comp) {
+    BitString drBS, pcO9BS;
+    int offset, address;
+
+    //First address is located from pc, then load from that address
+
+    //Get register and offset substrings
+    BSTR_Substring(&drBS, comp->ir, 4, 3);
+    BSTR_Substring(&pcO9BS, comp->ir, 7, 9);
+
+    //Get offset value
+    offset = BSTR_GetValueTwosComp(pcO9BS);
+
+    //Set value of destination register to pc + offset with size 16.
+    address = BSTR_GetValue(comp->pc) + offset;
+    //Set value of destination register with data in address.
+    BSTR_SetValue(&comp->reg[ BSTR_GetValue(comp->mem[ address ]) ],
+                  address, 16);
+
+    //Set condition code
+    COMP_SetConditionCode(&comp->cc, address);
+}
+
+void COMP_ExecuteSTI(Computer *comp) {
+    BitString srcBS, pcO9BS;
+    int offset, address;
+
+    BSTR_Substring(&srcBS, comp->ir, 4, 3);
+    BSTR_Substring(&pcO9BS, comp->ir, 7, 9);
+
+    offset = BSTR_GetValueTwosComp(pcO9BS);
+
+    address = BSTR_GetValue(comp->pc) + offset;
+
+    comp->mem[address] = comp->reg[BSTR_GetValue(srcBS)];
+
+}
+
+void COMP_ExecuteLDR(Computer *comp) {
+    BitString drBS, baseBS, pcO6BS;
+    int offset, ldVal;
+
+    //Get register and offset substrings
+    BSTR_Substring(&drBS, comp->ir, 4, 3);
+    BSTR_Substring(&baseBS, comp->ir, 7, 3);
+    BSTR_Substring(&pcO6BS, comp->ir, 10, 6);
+
+    offset = BSTR_GetValueTwosComp(pcO6BS);
+
+    ldVal = BSTR_GetValue(comp->reg[ BSTR_GetValue(baseBS) ]) + offset;
+
+    BSTR_SetValue(&comp->reg[BSTR_GetValue(drBS)], ldVal, 16);
+
+    //Set condition code
+    COMP_SetConditionCode(&comp->cc, ldVal);
+}
+
+void COMP_ExecuteSTR(Computer *comp) {
+    BitString srcBS, baseBS, pcO6BS;
+    int offset, address;
+
+    BSTR_Substring(&srcBS, comp->ir, 4, 3);
+    BSTR_Substring(&baseBS, comp->ir, 7, 3);
+    BSTR_Substring(&pcO6BS, comp->ir, 10, 6);
+
+    offset = BSTR_GetValueTwosComp(pcO6BS);
+
+    //Address = reg[base] + offset
+    address = BSTR_GetValue(comp->reg[BSTR_GetValue(baseBS)]) + offset;
+
+    comp->mem[address] = comp->reg[BSTR_GetValue(srcBS)];
+}
+
 int COMP_GetTrapVector(BitString trapVect8) {
     int returnValue;
     returnValue = BSTR_GetValue(trapVect8);
     return returnValue;
 }
 
-//TODO finish...
 void COMP_Execute(Computer* comp) {
     BitString opCode;
-    int opCodeInt;
-    
-//    /* use the PC to load current instruction from memory into IR */
-//    comp->ir = comp->mem[BSTR_GetValue(comp->pc)];
-//
-//    BSTR_AddOne(&comp->pc);
-//
-//    BSTR_Substring(&opCode,comp->ir,0,4);  /* isolate op code */
-//    opCodeInt = BSTR_GetValue(opCode); /* get its value */
 
-
-    //loop until 49? HALT
-    //TODO check sentinel vars
-    // Yeah I don't think this is the right value to use for the loop? Should probably use pc and
-    // move some of the above provided code into this loop.
-    int i, exit = 0;
+    //Integer i makes sure memory out of scope isn't addressed.
+    //Exits loop when exit != 0;
+    int opCodeInt, i, exit = 0;
 
     i = BSTR_GetValue(comp->pc);
     while (i < MAXMEM && exit == 0) {
@@ -194,8 +300,19 @@ void COMP_Execute(Computer* comp) {
                 COMP_ExecuteOut(comp);
             }
 
-
+        //Extra credit branching
+        } else if (opCodeInt == 5) {
+            COMP_ExecuteAnd(comp);
+        } else if (opCodeInt == 10) {
+            COMP_ExecuteLDI(comp);
+        } else if (opCodeInt == 11) {
+            COMP_ExecuteSTI(comp);
+        } else if (opCodeInt == 6) {
+            COMP_ExecuteLDR(comp);
+        } else if (opCodeInt == 7) {
+            COMP_ExecuteSTR(comp);
         }
+        //Assign pc's current value to i.
         i = BSTR_GetValue(comp->pc);
 	COMP_Display(*comp);
     }
