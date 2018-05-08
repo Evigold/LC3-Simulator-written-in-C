@@ -164,16 +164,16 @@ int main(int argc, const char * argv[]) {
 	// Test for ADD with negative outcome
 	//	ADD : R0 R5 #-9	(Add #-9 and the value stored in R5 and store in R0)
 	//	TRAP : x25	(HALT)
-	char * program[] =
+/*	char * program[] =
 		{
-		"000100010110111",
+		"0001000101110111",
 		"1111000000100101"
 		};
 	int programSize = 2;
-
+*/
 	// Results: R0 should store #-4 or "1111 1111 1111 1100"
 	//	CC: 100
-
+// PASSED
 
 	// Test for ADD with outcome of zero
 	//	ADD : R6 R7 #-7	(Add #-7 and the value stored in R7 and store in R6)
@@ -187,11 +187,11 @@ int main(int argc, const char * argv[]) {
 */
 	// Results : R6 should store #0 or "0000 0000 0000 0000"
 	//	CC : 010
-
+// PASSED
 
 	// Test for LD
-	// 	LD : R3 0	(Store value in pc + offset of 0 in R3)
-	//	     #33	(Stores #33 in pc)
+	// 	LD : R3 VAL	(Store value in pc + offset of 0 in R3)
+	// VAL     :  #33	(Stores #33 in pc)
 	//	TRAP : x25	(HALT)
 /*	char * program[] =
 		{
@@ -203,35 +203,52 @@ int main(int argc, const char * argv[]) {
 */
 	// Result: R3 should store #33 or "0000 0000 0010 0001"
 	//	CC: 001
-
+// PASSED
 
 	// Test for TRAP x23 (OUT)
-	//	LD : R0 #2
-	//	TRAP : x23	(OUT)
+	//	LD : R0 PKEY
+	//	TRAP : x21	(OUT)
 	//	TRAP : x25	(HALT)
-	//	     x4E	('P' for Pass)
+	// PKEY      :  x50	('P' for Pass)
 /*	char * program[] =
 		{
 		"0010000000000010",
-		"1111000000100011",
+		"1111000000100001",
 		"1111000000100101",
-		"0000000001001110"
+		"0000000001010000"
 		};
 	int programSize = 4;
 */
-
+	// Results : Print to console 'P'
+	//	CC : 001
+// PASSED
 
 	// Test for BRp
-	//	BRp :  #1
-	//	LD : R0 #2
-	//	LD : R0 #2
-	//	TRAP : x23	(OUT)
+	//	LD : R0 NKEY
+	//	ADD : R0 R0 #1
+	//	ADD : R2 R2 #-1
+	//	BRp : #-3
+	//	TRAP : x21	(OUT)
 	//	TRAP : x25	(HALT)
-	//	x46 ('F' for fail)
-	//	x4E ('P' for positive)
+	// NKEY	     : x4E	('P' for pass)
 /*	char * program[] =
 		{
-*/		
+		"0010000000000101",
+		"0001000000100001",
+		"0001010010111111",
+		"0000001111111101",
+		"1111000000100001",
+		"1111000000100101",
+		"0000000001001110"
+		};
+	int programSize = 7;
+*/
+	// Results : Should print P for pass, if N, then failed.
+//		CC : 010
+
+
+
+
 //
 //	//BSTR_SetValue(&demoStr,15,8);
 //	BSTR_SetBits(&demoStr,"0000000000001111");
