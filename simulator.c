@@ -228,7 +228,7 @@ int main(int argc, const char * argv[]) {
 	//	x4E ('P' for positive)
 /*	char * program[] =
 		{
-		
+*/		
 //
 //	//BSTR_SetValue(&demoStr,15,8);
 //	BSTR_SetBits(&demoStr,"0000000000001111");
@@ -251,7 +251,7 @@ int main(int argc, const char * argv[]) {
     }
 
 
-<<<<<<< HEAD
+
 	/* Next 3 lines are a test of NOT */
 	/* Once you are confident that single instructions work, you will */
 	/* want to replace this with code that loads all the instructions */
@@ -285,7 +285,7 @@ int main(int argc, const char * argv[]) {
 //	BSTR_SetBits(&addInstr, "0001011100000010");
 //	COMP_LoadWord(&comp, 0, addInstr);
 //	COMP_Display(comp);
->>>>>>> Scott
+
 
 	//Following LD instruction is    LD
 	/* execute the program */
