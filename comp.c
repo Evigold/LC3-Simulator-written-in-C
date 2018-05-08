@@ -314,7 +314,6 @@ void COMP_Execute(Computer* comp) {
         }
         //Assign pc's current value to i.
         i = BSTR_GetValue(comp->pc);
-	COMP_Display(*comp);
     }
 
 }

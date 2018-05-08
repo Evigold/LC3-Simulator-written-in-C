@@ -113,6 +113,81 @@ int main(int argc, const char * argv[]) {
 */
 
 
+	// N - 4E
+	// Z - 5A
+	// P - 50
+	// F - 46
+
+
+	//  TESTS
+
+
+	// Test for TRAP HALT
+	//	TRAP: x25
+
+/*	char* program[] = {"1111000000100101"};
+	int programSize = 1;
+*/
+	// Result:
+
+	// Test for ADD
+	//	ADD: R3 R3 #24	(Add #24 adn the value stored in R4 and store in R3)
+/*	char * program[] = 
+		{
+		"0001011011111000",
+		"1111000000100101"
+		};
+*/
+	//Results: R3 should store #27 or ""0000 0000 0001 1011"
+	//	CC: 001
+
+
+	// Test for ADD
+	//	ADD: R2 R4 R1	(Add values of R4 and R1 and store in R2)
+/* 	char * program[] = 
+		{
+		"0001010100000001",
+		"1111000000100101"
+		};
+*/
+	// Results: R2 should store #5 or ""0000 0000 0000 0101"
+	//	CC: 001
+
+
+	// Test for ADD with negative outcome
+	//	ADD: R0 R5 #-9	(Add #-9 and the value stored in R5 and store in R0)
+/*	char * program[] = 
+		{
+		 "000100010110111",
+		"1111000000100101"
+		};
+*/
+	// Results: R0 should store #-4 or "1111 1111 1111 1100"
+	//	CC: 100
+
+	// Test for ADD with outcome of zero
+	//	ADD: R6 R7 #-7	(Add #-7 and the value stored in R7 and store in R6)
+//	BSTR_SetBits(&test, "000111011111001");
+	// Results: R6 should store #0 or "0000 0000 0000 0000"
+	//	CC: 010
+
+	// Test for LD
+	// 	LD: R3 0	(Store value in pc + offset of 0 in R3)
+	//	#33		(Stores #33 in pc)
+//	BSTR_SetBits(&test, "0010011000000000");
+//	BSTR_SetBits(&testb, "0000000000100001");
+	// Result: R3 should store #33 or "0000 0000 0010 0001"
+	//	CC: 001
+
+
+
+	// Test for BRp
+	//	BR: p #1
+	//	LD: R0 #1
+	//	LD: R0 #1
+	//	x46 ('F' for fail)
+	//	x4E ('P' for positive)
+
 //    BitString demoStr, sub;
 //
 //	//BSTR_SetValue(&demoStr,15,8);
@@ -180,7 +255,9 @@ int main(int argc, const char * argv[]) {
 
 	/* shows final configuration of computer */
 	COMP_Display(comp);
-    
+
+
+
 }
 
 
