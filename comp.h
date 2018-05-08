@@ -33,8 +33,25 @@ void COMP_LoadWord(Computer* comp, int addr, BitString word);
 void COMP_Execute(Computer* comp);
 
 /* Performs Not operation */
-// TODO - Missing Piece: The Condition Code is not set.
 void COMP_ExecuteNot(Computer *comp);
+
+/* Performs Add operation. */
+void COMP_ExecuteAdd(Computer *comp);
+
+/* Performs LD operation. */
+void COMP_ExecuteLD(Computer *comp);
+
+/* Performs BR operation. */
+void COMP_ExecuteBR(Computer *comp);
+
+/* Performs Out operation. */
+void COMP_ExecuteOut(Computer *comp);
+
+/* Grabs trap vector from a Trap instruction. */
+int COMP_GetTrapVector(BitString trapVect8);
+
+/* Updates the nzp condition code. */
+void COMP_SetConditionCode(BitString* nzp, int value);
 
 #endif
 

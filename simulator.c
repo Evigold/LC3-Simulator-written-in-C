@@ -120,7 +120,15 @@ int main(int argc, const char * argv[]) {
 	COMP_Display(comp);   /* displays computer's initial configuration
 
 	/* TODO: load the instructions in the "program" array */
-    
+    int i;
+    //Loads program array into memory
+    for (i = 0; i < programSize; i++) {
+        BitString word;
+        BSTR_SetBits(&word, program[i]);
+        COMP_LoadWord(&comp, i, word);
+    }
+
+
 	/* Next 3 lines are a test of NOT */
 	/* Once you are confident that single instructions work, you will */
 	/* want to replace this with code that loads all the instructions */

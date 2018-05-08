@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "bstr.h"
 #include "comp.h"
-#include <string.h>
 
 void COMP_Init(Computer *cmp) {
     int r, m;
@@ -16,13 +15,9 @@ void COMP_Init(Computer *cmp) {
     }
 }
 
-
-
 void COMP_LoadWord(Computer* comp, int addr, BitString word) {
     comp->mem[addr] = word;
 }
-
-
 
 void COMP_ExecuteNot(Computer *comp) {
     BitString drBS, srBS;
@@ -120,14 +115,21 @@ void COMP_ExecuteBR(Computer *comp) {
     }
 }
 
-//TODO finish...
 void COMP_ExecuteOut(Computer *comp) {
+    BitString tempBS, outBS;
+    int n;
+    //What character to grab? Last 8 or first 8, all 16 and let overflow??
+    tempBS = comp->reg[0];
+    BSTR_Substring(&outBS, tempBS, 8, 8);
 
+    n = BSTR_GetValue(outBS);
+    printf("%c", n);
 }
 
-//TODO finish...
-void COMP_ExecuteHalt(Computer *comp) {
-
+int COMP_GetTrapVector(BitString trapVect8) {
+    int returnValue;
+    returnValue = BSTR_GetValue(trapVect8);
+    return returnValue;
 }
 
 //TODO finish...
@@ -135,28 +137,60 @@ void COMP_Execute(Computer* comp) {
     BitString opCode;
     int opCodeInt;
     
-    /* use the PC to load current instruction from memory into IR */
-    comp->ir = comp->mem[BSTR_GetValue(comp->pc)];
-    
-    BSTR_AddOne(&comp->pc);
-    
-    BSTR_Substring(&opCode,comp->ir,0,4);  /* isolate op code */
-    opCodeInt = BSTR_GetValue(opCode); /* get its value */
+//    /* use the PC to load current instruction from memory into IR */
+//    comp->ir = comp->mem[BSTR_GetValue(comp->pc)];
+//
+//    BSTR_AddOne(&comp->pc);
+//
+//    BSTR_Substring(&opCode,comp->ir,0,4);  /* isolate op code */
+//    opCodeInt = BSTR_GetValue(opCode); /* get its value */
 
-    /*what kind of instruction is this? */
-    if (opCodeInt == 9) {   // NOT
-        COMP_ExecuteNot(comp);
-    } else if (opCodeInt == 1) {
-        COMP_ExecuteAdd(comp);
-    } else if (opCodeInt == 2) {
-        COMP_ExecuteLD(comp);
-    } else if (opCodeInt == 0) {
-        COMP_ExecuteBR(comp);
-    } else if (opCodeInt == 15) {
-        //TODO PLACEHOLDER CONDIION?? CALL out and halt here
-        COMP_ExecuteHalt(comp);
-        COMP_ExecuteOut(comp);
+
+    //loop until 49? HALT
+    //TODO check sentinel vars
+    // Yeah I don't think this is the right value to use for the loop? Should probably use pc and
+    // move some of the above provided code into this loop.
+    int i, exit = 0;
+
+    i = BSTR_GetValue(comp->pc);
+    while (i < 50 && exit == 0) {
+        /* use the PC to load current instruction from memory into IR */
+        comp->ir = comp->mem[BSTR_GetValue(comp->pc)];
+
+        BSTR_AddOne(&comp->pc);
+
+        BSTR_Substring(&opCode,comp->ir,0,4);  /* isolate op code */
+        opCodeInt = BSTR_GetValue(opCode); /* get its value */
+
+        /*what kind of instruction is this? */
+        if (opCodeInt == 9) {   // NOT
+            COMP_ExecuteNot(comp);
+        } else if (opCodeInt == 1) {
+            COMP_ExecuteAdd(comp);
+        } else if (opCodeInt == 2) {
+            COMP_ExecuteLD(comp);
+        } else if (opCodeInt == 0) {
+            COMP_ExecuteBR(comp);
+        } else if (opCodeInt == 15) {
+            //x25 = halt = 37
+            //x21 = out  = 33
+
+            BitString trapBS;
+            BSTR_Substring(&trapBS, comp->ir, 8, 8);
+            int n = COMP_GetTrapVector(trapBS);
+
+            if (n == 37) {
+                /* Exit execute loop */
+                exit = 1;
+            } else if (n == 33) {
+                COMP_ExecuteOut(comp);
+            }
+
+
+        }
+        i = BSTR_GetValue(comp->pc);
     }
+
 }
 
 
