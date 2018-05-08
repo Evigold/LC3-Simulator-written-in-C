@@ -197,7 +197,6 @@ void COMP_Execute(Computer* comp) {
 
         }
         i = BSTR_GetValue(comp->pc);
-	COMP_Display(*comp);
     }
 
 }
