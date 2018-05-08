@@ -91,7 +91,7 @@ void COMP_ExecuteLD(Computer *comp) {
                    ldVal, 16);
 
     //Set condition code
-    //TODO depends on value stored in register right (could be 0 or positive)?
+    //TODO check, value loaded into register...
     COMP_SetConditionCode(&comp->cc, ldVal);
 }
 
@@ -153,7 +153,7 @@ void COMP_Execute(Computer* comp) {
     int i, exit = 0;
 
     i = BSTR_GetValue(comp->pc);
-    while (i < 50 && exit == 0) {
+    while (i < MAXMEM && exit == 0) {
         /* use the PC to load current instruction from memory into IR */
         comp->ir = comp->mem[BSTR_GetValue(comp->pc)];
 

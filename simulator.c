@@ -117,9 +117,9 @@ int main(int argc, const char * argv[]) {
 //	BSTR_Display(sub,1);
 
 	COMP_Init(&comp);
-	COMP_Display(comp);   /* displays computer's initial configuration
+	COMP_Display(comp);   /* displays computer's initial configuration */
 
-	/* TODO: load the instructions in the "program" array */
+
     int i;
     //Loads program array into memory
     for (i = 0; i < programSize; i++) {
