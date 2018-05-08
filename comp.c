@@ -23,89 +23,114 @@ void COMP_LoadWord(Computer* comp, int addr, BitString word) {
 }
 
 
-// TODO - Missing Piece: The Condition Code is not set.
+
 void COMP_ExecuteNot(Computer *comp) {
     BitString drBS, srBS;
     BSTR_Substring(&drBS,comp->ir,4,3);
     BSTR_Substring(&srBS,comp->ir,7,3);
     comp->reg[ BSTR_GetValue(drBS) ] = comp->reg[ BSTR_GetValue(srBS) ];
     BSTR_Invert( & comp->reg[ BSTR_GetValue(drBS)  ]  );
+
+    //Get the value to update condition code.
     int val = BSTR_GetValue(comp->reg[ BSTR_GetValue(drBS) ] );
-    char bits[3];
-    if (val > 0) {
-	strcpy(bits, "001");
-    } else if (val < 0) {
-	strcpy(bits, "100");
-    } else {
-	strcpy(bits, "010");
-    }
-    BSTR_SetBits(&(comp->cc), bits);
+    //Update condition code.
+    COMP_SetConditionCode(&comp->cc, val);
+
 }
 
 void COMP_ExecuteAdd(Computer *comp) {
     BitString immBS;
+    int sum;
+
+    //Check for immediate add
     BSTR_Substring(&immBS, comp->ir, 10, 1);
 
     if (BSTR_GetValue(immBS) == 1) {
-        //Do an immediate add
-        BitString drBS, srBS, immBS, sumBS;
-        int sum;
+        //Immediate add
+        BitString drBS, srBS, imm5BS, sumBS;
 
+        //Get register substrings
         BSTR_Substring(&drBS, comp->ir, 4, 3);
         BSTR_Substring(&srBS, comp->ir, 7, 3);
-        BSTR_Substring(&immBS, comp->ir, 11, 5);
+        BSTR_Substring(&imm5BS, comp->ir, 11, 5);
 
+        //Calculate sum and set sum
         sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(srBS) ])
-                + BSTR_GetValue(immBS);
+                + BSTR_GetValue(imm5BS);
         BSTR_SetValueTwosComp(&sumBS, sum, 16);
         comp->reg[BSTR_GetValue(drBS)] = sumBS;
+
     } else {
         //Register add
         BitString drBS, sr1BS, sr2BS, sumBS;
-        int sum;
 
         BSTR_Substring(&drBS, comp->ir, 4, 3);
         BSTR_Substring(&sr1BS, comp->ir, 7, 3);
         BSTR_Substring(&sr2BS, comp->ir, 13, 3);
-    
-		// USE APPEND METHOD?
-	//BSTR_Append(&drBS, sr1BS, sr2BS);
 
-        //sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
-        //         + BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
-        //BSTR_SetValueTwosComp(&sumBS, sum, 16);
-        //comp->reg[ BSTR_GetValue(drBS) ] = sumBS;
+        sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
+                 + BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
+        BSTR_SetValueTwosComp(&sumBS, sum, 16);
+        comp->reg[ BSTR_GetValue(drBS) ] = sumBS;
     }
 
-
+    //Update condition code
+    COMP_SetConditionCode(&comp->cc, sum);
 }
 
+
 void COMP_ExecuteLD(Computer *comp) {
-    BitString drBS, pcO9;
+    BitString drBS, pcO9BS;
+    int offset, ldVal;
+
+    //Get register and offset substrings
     BSTR_Substring(&drBS, comp->ir, 4, 3);
-    BSTR_Substring(&pcO9, comp->ir, 7, 9);
-    int value;
-    
+    BSTR_Substring(&pcO9BS, comp->ir, 7, 9);
+
+    //Get offset value
+    offset = BSTR_GetValueTwosComp(pcO9BS);
+
+    //Set value of destination regiseter to pc + offset with size 16.
+    ldVal = BSTR_GetValue(comp->pc) + offset;
+    BSTR_SetValue(&comp->reg[ BSTR_GetValue(drBS) ],
+                   ldVal, 16);
+
+    //Set condition code
+    //TODO depends on value stored in register right (could be 0 or positive)?
+    COMP_SetConditionCode(&comp->cc, ldVal);
 }
 
 void COMP_ExecuteBR(Computer *comp) {
     BitString nzp;
+
     BSTR_Substring(&nzp, comp->ir, 4, 3);
+
+    //Branch if true
     if (BSTR_GetValue(nzp) == BSTR_GetValue(comp->cc)) {
-        BitString pcO9;
-	BSTR_Substring(&pcO9, comp->ir, 7, 9);
-	BSTR_Append(&(comp->pc), comp->pc, pcO9);
+        BitString pcO9BR;
+        int offset;
+
+	    BSTR_Substring(&pcO9BR, comp->ir, 7, 9);
+
+        offset = BSTR_GetValueTwosComp(pcO9BR);
+
+        //Get value of new memory address and jump pc to that address.
+        BSTR_SetValue(&comp->pc, BSTR_GetValue(comp->pc) + offset, 16);
+
     }
 }
 
+//TODO finish...
 void COMP_ExecuteOut(Computer *comp) {
 
 }
 
+//TODO finish...
 void COMP_ExecuteHalt(Computer *comp) {
 
 }
 
+//TODO finish...
 void COMP_Execute(Computer* comp) {
     BitString opCode;
     int opCodeInt;
@@ -174,4 +199,15 @@ void COMP_Display(Computer cmp) {
     }
     printf("\n");
 }
+
+void COMP_SetConditionCode(BitString* ccBS, int value) {
+    if (value > 0) { //P
+        BSTR_SetValue(ccBS, 1, 3);
+    } else if (value < 0) { //N
+        BSTR_SetValue(ccBS, 4, 3);
+    } else {  //Z
+        BSTR_SetValue(ccBS, 2, 3);
+    }
+}
+
 
