@@ -181,8 +181,8 @@ void COMP_ExecuteAnd(Computer *comp) {
 }
 
 void COMP_ExecuteLDI(Computer *comp) {
-    BitString drBS, pcO9BS;
-    int offset, address;
+    BitString drBS, pcO9BS, pcADRS, ldValBit;
+    int offset, address, ldVal;
 
     //First address is located from pc, then load from that address
 
@@ -193,11 +193,16 @@ void COMP_ExecuteLDI(Computer *comp) {
     //Get offset value
     offset = BSTR_GetValueTwosComp(pcO9BS);
 
-    //Set value of destination register to pc + offset with size 16.
+    //Set address of wanted value from pc + offset.
     address = BSTR_GetValue(comp->pc) + offset;
+
+//  
+    ldVal = BSTR_GetValue(comp->mem[address]);
+
+    BSTR_Substring(&ldValBit, comp->mem[ldVal], 0, 16);
     //Set value of destination register with data in address.
-    BSTR_SetValue(&comp->reg[ BSTR_GetValue(comp->mem[ address ]) ],
-                  address, 16);
+    BSTR_SetValue(&comp->reg[ BSTR_GetValue(drBS) ],
+			BSTR_GetValue(ldValBit), 16);
 
     //Set condition code
     COMP_SetConditionCode(&comp->cc, address);

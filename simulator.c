@@ -70,7 +70,7 @@ int main(int argc, const char * argv[]) {
 /**    Your grade will depend largely on how well that works. */
 /************************************** */
 
-/*    char* program[] =
+    char* program[] =
     {
      "0010000000000111",
      "0010001000000111",
@@ -85,7 +85,7 @@ int main(int argc, const char * argv[]) {
 	 };
 
     int programSize = 10;
-*/
+
 //	BitString notInstr;
 
     /*  You may find it useful to play around with the */
@@ -245,8 +245,37 @@ int main(int argc, const char * argv[]) {
 	int programSize = 7;
 */
 	// Results : Should print P for pass, if N, then failed.
-//		CC : 010
+	//	CC : 010
 
+	// Test for LDI
+	//	LDI : R0 ADRS
+	//	TRAP : x21	(OUT)
+	//	TRAP : x25	(HALT)
+	// ADRS     : VAL
+	// VAL      : x4E	('P' for pass)
+/*	char * program[] =
+		{
+		"1010000000000010",
+		"1111000000000001",
+		"1111000000100101",
+		"0000000000000100",
+		"0000000010110011"
+		};
+	int programSize = 5;
+*/
+	// Results : R0 should contain xB3 or "0000 0000 1011 0011"
+// PASSED
+
+
+	// Test for STI
+	//
+/*	char * program[] =
+		{
+		
+		};
+	int programSize ==
+*/
+	// Results :
 
     /*
      * Test for LDR/STR/AND
@@ -261,7 +290,7 @@ int main(int argc, const char * argv[]) {
      *	.END
      */
 
-	char * program[] =
+/*	char * program[] =
 		{
 		"0001100010000001",
 		"0111100100001010",
@@ -271,7 +300,7 @@ int main(int argc, const char * argv[]) {
 		"1111000000100101"
 		};
 	int programSize = 6;
-	
+*/
 /*
 	Results:  R4 <- R2 + R1 = 3
 		  M[13] <- 3
