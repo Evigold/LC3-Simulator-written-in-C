@@ -134,7 +134,7 @@ int main(int argc, const char * argv[]) {
 	/* want to replace this with code that loads all the instructions */
 	/* from the array shown above. */
 
-	/* following not instruction is   NOT Dest: R4, Source: R5 */
+	/* following not instruction is   NOT Dest: R4, Source: R5 
     BitString notInstr;
 	BSTR_SetBits(&notInstr,"1001100101111111");
 	COMP_LoadWord(&comp,0,notInstr);

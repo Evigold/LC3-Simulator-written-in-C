@@ -75,7 +75,7 @@ void COMP_ExecuteAdd(Computer *comp) {
 
 
 void COMP_ExecuteLD(Computer *comp) {
-    BitString drBS, pcO9BS;
+    BitString drBS, pcO9BS, ldValBit;
     int offset, ldVal;
 
     //Get register and offset substrings
@@ -87,8 +87,9 @@ void COMP_ExecuteLD(Computer *comp) {
 
     //Set value of destination regiseter to pc + offset with size 16.
     ldVal = BSTR_GetValue(comp->pc) + offset;
+    BSTR_Substring(&ldValBit, comp->mem[ldVal], 0 ,16);
     BSTR_SetValue(&comp->reg[ BSTR_GetValue(drBS) ],
-                   ldVal, 16);
+                   BSTR_GetValue(ldValBit), 16);
 
     //Set condition code
     //TODO depends on value stored in register right (could be 0 or positive)?
@@ -189,6 +190,7 @@ void COMP_Execute(Computer* comp) {
 
         }
         i = BSTR_GetValue(comp->pc);
+	COMP_Display(*comp);
     }
 
 }
