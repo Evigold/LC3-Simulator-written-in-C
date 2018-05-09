@@ -120,10 +120,10 @@ void COMP_ExecuteOut(Computer *comp) {
     BitString tempBS, outBS;
     int n;
     //What character to grab? Last 8 or first 8, all 16 and let overflow??
-    tempBS = comp->reg[0];
-    BSTR_Substring(&outBS, tempBS, 8, 8);
+//    tempBS = comp->reg[0];
+//    BSTR_Substring(&outBS, tempBS, 8, 8);
 
-    n = BSTR_GetValue(outBS);
+    n = BSTR_GetValue(comp->reg[0]);
     printf("%c", n);
 }
 
