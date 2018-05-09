@@ -50,8 +50,8 @@ void COMP_ExecuteAdd(Computer *comp) {
         BSTR_Substring(&imm5BS, comp->ir, 11, 5);
 
         //Calculate sum and set sum
-        sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(srBS) ])
-                + BSTR_GetValue(imm5BS);
+        sum = BSTR_GetValueTwosComp(comp->reg[ BSTR_GetValue(srBS) ])
+                + BSTR_GetValueTwosComp(imm5BS);
         BSTR_SetValueTwosComp(&sumBS, sum, 16);
         comp->reg[BSTR_GetValue(drBS)] = sumBS;
 
@@ -63,8 +63,8 @@ void COMP_ExecuteAdd(Computer *comp) {
         BSTR_Substring(&sr1BS, comp->ir, 7, 3);
         BSTR_Substring(&sr2BS, comp->ir, 13, 3);
 
-        sum = BSTR_GetValue(comp->reg[ BSTR_GetValue(sr1BS) ])
-                 + BSTR_GetValue(comp->reg[ BSTR_GetValue(sr2BS) ]);
+        sum = BSTR_GetValueTwosComp(comp->reg[ BSTR_GetValue(sr1BS) ])
+                 + BSTR_GetValueTwosComp(comp->reg[ BSTR_GetValue(sr2BS) ]);
         BSTR_SetValueTwosComp(&sumBS, sum, 16);
         comp->reg[ BSTR_GetValue(drBS) ] = sumBS;
     }
@@ -101,18 +101,25 @@ void COMP_ExecuteBR(Computer *comp) {
 
     BSTR_Substring(&nzp, comp->ir, 4, 3);
 
+	// With bit AND opperataion, if NZP from IR AND from CC != 0, 
+	//then they share a 1.
+    unsigned int nzpIr, nzpCc, temp;
+    nzpIr = BSTR_GetValue(nzp);
+    nzpCc = BSTR_GetValue(comp->cc);
+    temp = nzpIr & nzpCc;
+	
     //Branch if true
-    if (BSTR_GetValue(nzp) == BSTR_GetValue(comp->cc)) {
+    if (temp != 0) {
         BitString pcO9BR;
-        int offset;
+        int offset, pcAD;
 
-	    BSTR_Substring(&pcO9BR, comp->ir, 7, 9);
+        BSTR_Substring(&pcO9BR, comp->ir, 7, 9);
 
         offset = BSTR_GetValueTwosComp(pcO9BR);
-
+	pcAD = offset;
+	pcAD += BSTR_GetValue(comp->pc);
         //Get value of new memory address and jump pc to that address.
-        BSTR_SetValue(&comp->pc, BSTR_GetValue(comp->pc) + offset, 16);
-
+	BSTR_SetValue(&comp->pc, pcAD, 16);
     }
 }
 
