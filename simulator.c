@@ -3,6 +3,7 @@
  * TCSS 371C Assignment 4
  * Scott: Jetbrains CLion IDE
  * Evi:   Nano editor and gdb
+ * Collaborated on private github repo
  */
 
 #include <stdio.h>
