@@ -270,6 +270,17 @@ int main(int argc, const char * argv[]) {
 		"1111000000100101"
 		};
 	int programSize = 6;
+	
+/*
+	Results:  R4 <- R2 + R1 = 3
+		  M[13] <- 3
+		  R7 <- M[R6] + 7
+		  R0 = 1 (R3 AND R7)
+		  R1 = 13 (R7 AND 13)
+		  
+	PASSED
+
+*/
 
 //
 //	//BSTR_SetValue(&demoStr,15,8);
