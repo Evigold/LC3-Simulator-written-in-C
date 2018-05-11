@@ -322,7 +322,7 @@ int main(int argc, const char * argv[]) {
 	BSTR_SetBits(&addInstr, "0001011100000010");
 	COMP_LoadWord(&comp, 0, addInstr);
 	COMP_Display(comp);
-=======
+
 //	/* Next 3 lines are a test of NOT */
 //	/* Once you are confident that single instructions work, you will */
 //	/* want to replace this with code that loads all the instructions */
