@@ -1,3 +1,10 @@
+/*
+ * Scott Robertson, Evi Goldschmidt
+ * TCSS 371C Assignment 4
+ * Scott: Jetbrains CLion IDE
+ * Evi:   Nano editor and gdb
+ */
+
 #include <stdio.h>
 
 #include "bstr.h"
@@ -129,22 +136,22 @@ int main(int argc, const char * argv[]) {
     }
 
 
-	/* Next 3 lines are a test of NOT */
-	/* Once you are confident that single instructions work, you will */
-	/* want to replace this with code that loads all the instructions */
-	/* from the array shown above. */
-
-	/* following not instruction is   NOT Dest: R4, Source: R5 */
-    BitString notInstr;
-	BSTR_SetBits(&notInstr,"1001100101111111");
-	COMP_LoadWord(&comp,0,notInstr);
-    COMP_Display(comp);
-
-	//Following add instruction is    ADD Dest: R3, sr1: R4, sr2: R2
-	BitString addInstr;
-	BSTR_SetBits(&addInstr, "0001011100000010");
-	COMP_LoadWord(&comp, 0, addInstr);
-	COMP_Display(comp);
+//	/* Next 3 lines are a test of NOT */
+//	/* Once you are confident that single instructions work, you will */
+//	/* want to replace this with code that loads all the instructions */
+//	/* from the array shown above. */
+//
+//	/* following not instruction is   NOT Dest: R4, Source: R5 */
+//    BitString notInstr;
+//	BSTR_SetBits(&notInstr,"1001100101111111");
+//	COMP_LoadWord(&comp,0,notInstr);
+//    COMP_Display(comp);
+//
+//	//Following add instruction is    ADD Dest: R3, sr1: R4, sr2: R2
+//	BitString addInstr;
+//	BSTR_SetBits(&addInstr, "0001011100000010");
+//	COMP_LoadWord(&comp, 0, addInstr);
+//	COMP_Display(comp);
 
 	//Following LD instruction is    LD
 	/* execute the program */
