@@ -247,7 +247,29 @@ int main(int argc, const char * argv[]) {
 //		CC : 010
 
 
+    /*
+     * Test for LDR/STR/AND
+     * .ORIG x00
+     *  	ADD R4  R2  R1
+     *		STR R4  R4  #10
+     *		LDR R7  R4  #9
+     *		AND R0  R3  R7
+     *		AND R1  R7  #13
+     *		HALT
+     *
+     *	.END
+     */
 
+	char * program[] =
+		{
+		"0001100010000001",
+		"0111100100001010",
+		"0110111110000111",
+		"0101000011000111",
+		"0101001111101101",
+		"1111000000100101"
+		};
+	int programSize = 6;
 
 //
 //	//BSTR_SetValue(&demoStr,15,8);
